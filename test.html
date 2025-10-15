@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova AI — Neural Observation & Visualization Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: #0b0d12;
+  color: #e0e0e0;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* === HEADER === */
+.hdr {
+  background-color: rgba(16, 20, 53, 0.95);
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.hdr-img {
+  width: 160px;
+  height: auto;
+}
+
+.hdr-link-sec {
+  display: flex;
+  gap: 35px;
+  font-size: 18px;
+}
+
+.hdr-link-sec a {
+  text-decoration: none;
+  color: white;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.hdr-link-sec a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #00bfff;
+  transition: width 0.4s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.hdr-link-sec a:hover::after {
+  width: 100%;
+}
+
+.hdr-btn {
+  width: 130px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  background: linear-gradient(90deg, #007bff, #00d4ff);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.3s ease;
+}
+.hdr-btn:hover {
+  box-shadow: 0 0 15px #00bfff;
+  transform: scale(1.05);
+}
+
+/* === Основная часть === */
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00bfff;
+  margin-top: 120px;
+  letter-spacing: 1.5px;
+  font-size: 1.8em;
+}
+
+.container {
+  background: #10131a;
+  border: 1px solid #1e2a38;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.15);
+  width: 90%;
+  max-width: 950px;
+  margin: 25px auto;
+  padding: 20px 25px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 15px 20px;
+  margin-top: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-size: 13px;
+  color: #9ed2ff;
+  font-family: 'Orbitron', sans-serif;
+}
+label span {
+  margin-bottom: 5px;
+  color: #00bfff;
+  font-weight: 600;
+}
+
+input {
+  background: #141821;
+  color: #9ed2ff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  box-shadow: inset 0 0 6px #007bff44;
+  transition: all 0.25s ease;
+}
+input:focus {
+  box-shadow: 0 0 8px #00bfff;
+  outline: none;
+}
+
+button {
+  background: linear-gradient(90deg, #007bff, #00d4ff);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 12px 30px;
+  margin-top: 25px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  max-width: 280px;
+}
+button:hover {
+  box-shadow: 0 0 20px #00bfff;
+  transform: scale(1.05);
+}
+
+/* === Результат === */
+.result-box {
+  background: #10131a;
+  border: 2px solid #1e2a38;
+  border-radius: 15px;
+  margin-top: 25px;
+  padding: 20px 15px 10px;
+  animation: fadeIn 0.8s ease;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result-box.green {
+  border-color: #00ff99;
+  animation: pulse-green 2s infinite;
+}
+.result-box.yellow {
+  border-color: #ffcc00;
+  animation: pulse-yellow 2s infinite;
+}
+.result-box.red {
+  border-color: #ff5555;
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%,100% { box-shadow: 0 0 10px #00ff9944, 0 0 20px #00ff9944; }
+  50% { box-shadow: 0 0 25px #00ff9977, 0 0 50px #00ff9977; }
+}
+@keyframes pulse-yellow {
+  0%,100% { box-shadow: 0 0 10px #ffcc0044, 0 0 20px #ffcc0044; }
+  50% { box-shadow: 0 0 25px #ffcc0077, 0 0 50px #ffcc0077; }
+}
+@keyframes pulse-red {
+  0%,100% { box-shadow: 0 0 10px #ff444444, 0 0 20px #ff444444; }
+  50% { box-shadow: 0 0 25px #ff444477, 0 0 50px #ff444477; }
+}
+
+.result-box h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00ffcc;
+  font-size: 1.4em;
+}
+canvas {
+  margin-top: 15px;
+  width: 100% !important;
+  max-height: 260px !important;
+  border-radius: 10px;
+}
+.footer {
+  color: #6fc9ff;
+  font-size: 13px;
+  margin-top: 10px;
+}
+.error {
+  color: #ff7777;
+  background: #1a0b0b;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 15px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Мобильная адаптация === */
+@media (max-width: 768px) {
+  .hdr { flex-direction: column; height: auto; padding: 10px; }
+  .hdr-link-sec { flex-wrap: wrap; gap: 15px; }
+  h1 { font-size: 1.6em; margin-top: 100px; }
+  input { font-size: 13px; padding: 7px 8px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- === HEADER === -->
+<header class="hdr">
+  <a href="./index.html"><img src="./imgs/photo_2025-10-05_12.35.13-removebg-preview.png" alt="Nextlify Logo" class="hdr-img"></a>
+  <section class="hdr-link-sec">
+    <a href="./index.html">Home</a>
+    <a href="./Exoplanets.html">Exoplanets</a>
+    <a href="./test.html">AI</a>
+  </section>
+  <a href="./login.html">
+    <button class="hdr-btn">Log in</button>
+  </a>
+</header>
+
+<h1>🪐 Nova AI — Neural Observation & Visualization Assistant</h1>
+
+<div class="container">
+  <form id="predict-form">
+    <div class="input-grid">
+      <label><span>🌌 Orbital Period (days)</span><input type="number" step="any" name="koi_period" required></label>
+      <label><span>⏱ Transit Duration (hours)</span><input type="number" step="any" name="koi_duration" required></label>
+      <label><span>📉 Transit Depth (ppm)</span><input type="number" step="any" name="koi_depth" required></label>
+      <label><span>🪐 Planet Radius (Earth radii)</span><input type="number" step="any" name="koi_prad" required></label>
+      <label><span>📈 Signal-to-Noise Ratio</span><input type="number" step="any" name="koi_snr" required></label>
+      <label><span>🎯 Impact Parameter (0–1)</span><input type="number" step="any" name="koi_impact" required></label>
+      <label><span>🔥 Equilibrium Temperature (K)</span><input type="number" step="any" name="koi_teq" required></label>
+      <label><span>🌞 Stellar Temperature (K)</span><input type="number" step="any" name="koi_steff" required></label>
+      <label><span>🌍 Surface Gravity (log g)</span><input type="number" step="any" name="koi_slogg" required></label>
+      <label><span>⚙️ Metallicity [Fe/H]</span><input type="number" step="any" name="koi_smet" required></label>
+      <label><span>💡 Kepler Magnitude</span><input type="number" step="any" name="koi_kepmag" required></label>
+      <label><span>🔢 Transit Count</span><input type="number" step="any" name="koi_count" required></label>
+      <label><span>🪩 Radius Ratio (Rp/Rs)</span><input type="number" step="any" name="koi_ror" required></label>
+    </div>
+    <button type="submit">🚀 Predict Exoplanet Type</button>
+  </form>
+  <div id="result"></div>
+</div>
+
+<script>
+const form = document.getElementById("predict-form");
+const resultBox = document.getElementById("result");
+const API_URL = "https://unsplayed-rosaria-flavoressly.ngrok-free.dev";
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  resultBox.innerHTML = "<p style='color:#9ed2ff;'>🛰 Analyzing observation data...</p>";
+
+  const formData = new FormData(form);
+  const params = {};
+  let hasNegative = false;
+
+  formData.forEach((value, key) => {
+    const num = parseFloat(value);
+    if (num < 0 && key !== "koi_smet" && key !== "koi_kepmag") hasNegative = true;
+    params[key] = num;
+  });
+
+  if (hasNegative) {
+    resultBox.innerHTML = `<div class='error'>⚠️ Invalid input detected.<br>Negative values are not allowed for physical parameters.</div>`;
+    return;
+  }
+
+  try {
+    const response = await fetch(API_URL + "/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(params)
+    });
+
+    const text = await response.text();
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(text, 'text/html');
+
+    const prediction = htmlDoc.querySelector("h2")?.innerText || "No prediction";
+    const probElements = htmlDoc.querySelectorAll("li");
+    const time = htmlDoc.querySelector(".footer")?.innerHTML || "";
+
+    let colorClass = "yellow";
+    if (prediction.toLowerCase().includes("false")) colorClass = "red";
+    if (prediction.toLowerCase().includes("planet") || prediction.toLowerCase().includes("true")) colorClass = "green";
+
+    const labels = [];
+    const data = [];
+    probElements.forEach(el => {
+      const [label, value] = el.innerText.split("—").map(s => s.trim());
+      labels.push(label);
+      data.push(parseFloat(value));
+    });
+
+    resultBox.innerHTML = `
+      <div class='result-box ${colorClass}'>
+        <h2>${prediction}</h2>
+        <canvas id="chart"></canvas>
+        <div class='footer'>${time}</div>
+      </div>
+    `;
+
+    const ctx = document.getElementById("chart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Prediction Confidence (%)",
+          data: data,
+          backgroundColor: colorClass === "green" ? "#00ff9966" :
+                           colorClass === "yellow" ? "#ffcc0066" : "#ff555566",
+          borderColor: colorClass === "green" ? "#00ff99" :
+                        colorClass === "yellow" ? "#ffcc00" : "#ff5555",
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
+        scales: {
+          y: { beginAtZero: true, grid: { color: "#1e2a38" }, ticks: { color: "#9ed2ff" } },
+          x: { grid: { display: false }, ticks: { color: "#9ed2ff" } }
+        },
+        plugins: { legend: { display: false } },
+        animation: { duration: 900, easing: "easeOutCubic" }
+      }
+    });
+
+  } catch (error) {
+    resultBox.innerHTML = `<div class='error'>⚠️ Error connecting to AI server.<br>${error}</div>`;
+  }
+});
+</script>
+</body>
+</html>
