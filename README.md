@@ -24,7 +24,7 @@ The project aims to make space data analysis faster and smarter while inspiring 
 ---
 ## 📊 AI Model
 You can open and run the model directly in Google Colab:  
-👉 [**Open Nova AI Model in Colab**](https://colab.research.google.com/github/yourusername/nova-ai/blob/main/nova_ai_model.ipynb)
+👉 [**Open Nova AI Model in Colab**](https://colab.research.google.com/drive/1ZpoB9E8ns5lEMs86wqB0OIb50QK8DxBV?usp=drive_link)
 The model processes NASA exoplanet datasets and predicts the probability of a planet being an exoplanet based on key parameters.
 ---
 ## 💻 Web Platform
